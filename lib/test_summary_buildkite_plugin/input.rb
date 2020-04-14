@@ -106,10 +106,16 @@ module TestSummaryBuildkitePlugin
             failures << Failure::Structured.new(
               summary: summary(failure),
               message: message(failure),
-              details: failure_details
+              details: failure_details,
+              image: image(failure_details)
             )
           end
         end
+      end
+
+      def image(details)
+        match = /^[S|s]creenshot:\s+(.*)$/&.match(details)
+        match ? match[1] : nil
       end
 
       def summary(failure)

@@ -24,15 +24,18 @@ module TestSummaryBuildkitePlugin
       def details; end
 
       def message; end
+
+      def image; end
     end
 
     class Structured < Base
-      attr_accessor :summary, :message, :details
+      attr_accessor :summary, :message, :details, :image
 
-      def initialize(summary:, message: nil, details: nil)
+      def initialize(summary:, message: nil, details: nil, image: nil)
         @summary = summary
         @message = message
         @details = details
+        @image = image
       end
     end
   end
