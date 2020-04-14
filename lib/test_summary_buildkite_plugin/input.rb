@@ -102,10 +102,11 @@ module TestSummaryBuildkitePlugin
         xml = REXML::Document.new(str)
         xml.elements.enum_for(:each, '//testcase').each_with_object([]) do |testcase, failures|
           testcase.elements.each('failure | error') do |failure|
+            failure_details = details(failure).length > 0 ? details(failure) : details(testcase.elements['system-err'])
             failures << Failure::Structured.new(
               summary: summary(failure),
               message: message(failure),
-              details: details(failure)
+              details: failure_details
             )
           end
         end
