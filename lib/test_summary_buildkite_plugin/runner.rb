@@ -25,7 +25,7 @@ module TestSummaryBuildkitePlugin
     end
 
     def annotate(markdown)
-      Agent.run('annotate', '--context', context, '--style', style, stdin: markdown)
+      Agent.run('annotate', '--context', "#{context}-#{ENV['BUILDKITE_JOB_ID']}", '--style', style, stdin: markdown)
     end
 
     def inputs
