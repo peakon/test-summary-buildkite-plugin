@@ -2,7 +2,7 @@
 
 set -eEuo pipefail
 
-DOCKER_REPO=public.ecr.aws/peakon/test-summary-buildkite-plugin
+DOCKER_REPO=${BUILDKITE_PLUGIN_TEST_SUMMARY_DOCKER_REPO:-peakon/test-summary-buildkite-plugin}
 
 on_failure() {
     echo "Command failed with exit status: $?"

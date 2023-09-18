@@ -66,6 +66,8 @@ configuration:
       type: string
     fail_on_error:
       type: boolean
+    docker_repo:
+      type: string
   required:
     - inputs
   additionalProperties: false
