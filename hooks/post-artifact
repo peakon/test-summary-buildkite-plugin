@@ -2,6 +2,12 @@
 
 set -eEuo pipefail
 
+# exit immediately if the last command succeeded
+if [[ "${BUILDKITE_COMMAND_EXIT_STATUS:-0}" == "0" ]]; then
+    echo "Command succeeded, skipping test summary"
+    exit 0
+fi
+
 DOCKER_REPO=${BUILDKITE_PLUGIN_TEST_SUMMARY_DOCKER_REPO:-peakon/test-summary-buildkite-plugin}
 
 on_failure() {
@@ -19,7 +25,10 @@ cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 TAG=$(git describe --tags --exact-match 2> /dev/null || true)
 
 if [[ -n "$TAG" ]]; then
+    echo "Found tag $TAG, pulling from docker hub"
     IMAGE="$DOCKER_REPO:$TAG"
+    echo "Pulling image: $IMAGE"
+    docker pull "$IMAGE"
 else
     echo "No tag found, building image locally"
     IMAGE=test-summary:$BUILDKITE_JOB_ID
