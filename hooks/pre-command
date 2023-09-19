@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -eEuo pipefail
+
+DOCKER_REPO=${BUILDKITE_PLUGIN_TEST_SUMMARY_DOCKER_REPO:-peakon/test-summary-buildkite-plugin}
+
+on_failure() {
+    echo "Command failed with exit status: $?"
+    if [[ "${BUILDKITE_PLUGIN_TEST_SUMMARY_FAIL_ON_ERROR:-false}" != "true" ]]; then
+        echo "Suppressing failure so pipeline can continue (if you do not want this behaviour, set fail_on_error to true)"
+        exit 0
+    fi
+}
+
+trap on_failure ERR
+
+# cd to plugin directory
+cd "$( dirname "${BASH_SOURCE[0]}" )/.."
+TAG=$(git describe --tags --exact-match 2> /dev/null || true)
+
+if [[ -n "$TAG" ]]; then
+    echo "Found tag $TAG, pulling from docker hub"
+    IMAGE="$DOCKER_REPO:$TAG"
+    echo "Pulling image: $IMAGE"
+    docker pull "$IMAGE"
+fi
